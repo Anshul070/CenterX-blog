@@ -31,7 +31,7 @@ userRouter.post("/signup/", async (c) => {
         error: "Validation error",
       });
     }
-    const { name, email, password } = newUser.data;
+    const { username, email, password } = newUser.data;
 
     // if validation is successfull then check if user with same exists or not
     const existUser = await prisma.user.findFirst({
@@ -50,7 +50,7 @@ userRouter.post("/signup/", async (c) => {
 
     const res = await prisma.user.create({
       data: {
-        name: name,
+        username: username,
         email: email,
         password: password,
       },

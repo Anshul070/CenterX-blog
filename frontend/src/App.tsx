@@ -1,8 +1,10 @@
-import React from 'react'
+import Auth from './pages/Auth'
 
 function App() {
   return (
-    <div>App</div>
+    <main className='w-full bg-zinc-300'>
+      <Auth />
+    </main>
   )
 }
 
