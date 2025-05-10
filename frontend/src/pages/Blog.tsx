@@ -1,8 +1,7 @@
-import React from "react";
 import { useParams } from "react-router";
 import { useBlog } from "../hooks";
 import Header from "../components/Header";
-import { Avatar, Circle } from "../components/BlogDisplayCard";
+import { Avatar } from "../components/BlogDisplayCard";
 import { getFormattedDate } from "../utils/date";
 
 function Blog() {

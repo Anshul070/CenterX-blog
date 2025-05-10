@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type {SigninUser, SignupUser} from "@devxhustler/common"
 import axios from "../utils/axios";
 import AuthCard from "../components/AuthCard";

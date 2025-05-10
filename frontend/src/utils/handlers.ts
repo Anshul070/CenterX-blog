@@ -27,7 +27,7 @@ export const updateUser = async (e: any, initialInfo: UpdateUser) => {
 
   // Uncomment when ready to send
   try {
-    const res = await axios.put("/user/update/", updatedFields, {
+    await axios.put("/user/update/", updatedFields, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -39,7 +39,7 @@ export const updateUser = async (e: any, initialInfo: UpdateUser) => {
 
 export const changePostStatus = async (id: string, published: boolean) => {
   try {
-    const res = await axios.put(
+    await axios.put(
       `/blog/${id}/update`,
       { published: !published },
       {
@@ -56,7 +56,7 @@ export const changePostStatus = async (id: string, published: boolean) => {
 
 export const deletePost = async (id: string) => {
   try {
-    const res = await axios.delete(`/blog/${id}/delete`, {
+    await axios.delete(`/blog/${id}/delete`, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },

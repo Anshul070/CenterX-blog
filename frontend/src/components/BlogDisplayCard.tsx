@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router";
 import { getFormattedDate } from "../utils/date";
 import { HiOutlineDotsVertical } from "react-icons/hi";

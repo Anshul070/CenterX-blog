@@ -1,4 +1,3 @@
-import React from "react";
 import { Avatar } from "./BlogDisplayCard";
 import { useNavigate } from "react-router";
 import Menubar from "./Menubar";

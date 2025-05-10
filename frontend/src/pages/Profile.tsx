@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import { useUserInfo } from "../hooks";
-import BlogDisplayCard, { Avatar } from "../components/BlogDisplayCard";
+import BlogDisplayCard from "../components/BlogDisplayCard";
 import { getFormattedDate } from "../utils/date";
 import { useEffect, useState } from "react";
 import { changePostStatus, deletePost, updateUser } from "../utils/handlers";
@@ -8,11 +8,11 @@ import { useNavigate } from "react-router";
 
 function Profile() {
   const navigate = useNavigate()
-  const { error, loading, user } = useUserInfo();
+  const {  loading, user } = useUserInfo();
   const [userInfo, setUserInfo] = useState<{ field: string; value: string }[]>(
     []
   );
-  const initalInfo = {
+  const initalInfo = loading ? {} : {
     name: user.name,
     username: user.username,
     email: user.email,

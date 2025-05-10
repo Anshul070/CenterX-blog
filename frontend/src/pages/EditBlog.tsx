@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../components/Header";
 import BlogCard from "../components/BlogCard";
 import { useBlog } from "../hooks";
@@ -6,7 +5,7 @@ import { useParams } from "react-router";
 
 function EditBlog() {
   const { id } = useParams();
-  const { blog, error, loading } = useBlog(id as string);
+  const { blog, loading } = useBlog(id as string);
   if (loading) {
     return <div className="h-screen bg-white">Loading...</div>;
   }

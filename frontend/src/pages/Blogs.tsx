@@ -1,11 +1,9 @@
-import React from "react";
 import BlogDisplayCard from "../components/BlogDisplayCard";
 import Header from "../components/Header";
 import { useBlogs } from "../hooks";
-import { getFormattedDate } from "../utils/date";
 
 function Blogs() {
-    const { blogs, error, loading } = useBlogs();
+    const { blogs, loading } = useBlogs();
     if (loading) {
         return <div className="h-screen bg-white">Loading...</div>;
     }
@@ -13,7 +11,7 @@ function Blogs() {
     <div className="h-screen bg-white">
         <Header />
         <div className=" px-92">
-          {blogs.map((blog) =>{
+          {blogs?.map((blog) =>{
             return <BlogDisplayCard 
             key={blog.id}
             id={blog.id}

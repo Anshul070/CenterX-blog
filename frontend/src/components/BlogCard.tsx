@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { createBlog, updateBlog } from "../utils/handlers";
 
 type BlogCardProps = {
