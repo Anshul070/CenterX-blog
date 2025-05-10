@@ -1,5 +1,3 @@
-import React from "react";
-
 type MenuItem = {
   title: string;
   action: () => void;
