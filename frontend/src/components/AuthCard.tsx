@@ -68,8 +68,8 @@ function AuthCard(props: AuthProps) {
       </form>
     </div>
   </section>
-  <section className="w-full hidden md:w-1/2 h-auto md:h-screen md:flex items-center justify-center p-6 xl:px-20">
-    <h1 className="text-2xl text-justify font-bold  text-black">{tagline}</h1>
+  <section className="w-full hidden md:w-1/2 h-auto md:h-screen bg-zinc-300 md:flex items-center justify-center p-6 xl:px-20">
+    <h1 className="text-2xl text-justify font-bold">{tagline}</h1>
   </section>
 </main>
 

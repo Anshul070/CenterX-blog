@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import type {SigninUser, SignupUser} from "@devxhustler/common"
-import axios from "../axios";
+import axios from "../utils/axios";
 import AuthCard from "../components/AuthCard";
-
+import { useNavigate } from "react-router";
+type Mode = "signup" | "signin"; 
 function Auth() {
-  const [mode, setMode] = useState("signup");
+
+  const navigate = useNavigate();
+
+  const [mode, setMode] = useState<Mode>("signup");
   const signinInfo = {
     fields: ["Email", "Password"],
     placeholder: ["m@example.com", "abcd1234"],
@@ -20,9 +24,13 @@ function Auth() {
       };
       console.log(formdata);
         const res = await axios.post("/user/signin/", formdata);
-        console.log(res.data);
+        const token = res.headers["authorization"];
+        console.log(token);
+        if (token) {
+          localStorage.setItem("token", token);
+        }
         if (res.status === 200) {
-            
+          navigate("/blogs");
         }
     },
     toggleMode: () => {

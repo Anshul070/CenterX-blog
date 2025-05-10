@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { getPrisma } from "../prismaFunction";
-import { sign } from "hono/jwt";
-import { signinUser, signupUser } from "@devxhustler/common";
+import { sign, verify } from "hono/jwt";
+import { signinUser, signupUser, updateUser } from "@devxhustler/common";
+
 export const userRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -11,10 +12,6 @@ export const userRouter = new Hono<{
     userId: string;
   };
 }>();
-
-
-
-
 
 userRouter.post("/signup/", async (c) => {
   try {
@@ -107,9 +104,105 @@ userRouter.post("/signin/", async (c) => {
     }
 
     const token = await sign({ id: existUser.id }, c.env.SECRET_KEY);
-    c.res.headers.set("Authorization", `bearer ${token}`);
+    c.res.headers.set("Authorization", `Bearer ${token}`);
+    c.res.headers.set("Access-Control-Expose-Headers", "Authorization");
+
     return c.json({
       jwt: token,
+    });
+  } catch (e) {
+    c.status(500);
+    return c.json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+userRouter.use("/*", async (c, next) => {
+  try {
+    //Check if token exist or not for authantication
+    const token = c.req.header("Authorization")?.split(" ")[1];
+
+    if (!token) {
+      c.status(401);
+      return c.text("You are not authorized");
+    }
+    const auth = await verify(token, c.env.SECRET_KEY);
+    if (!auth) {
+      return c.json({
+        message: "You are not logged in",
+      });
+    }
+    c.set("userId", auth.id as string);
+    return await next();
+  } catch (e) {
+    c.status(401);
+    return c.text("You are not authorized");
+  }
+});
+
+userRouter.put("/update/", async (c) => {
+  try {
+    const prisme = getPrisma(c.env.DATABASE_URL);
+    const body = await c.req.json();
+    const userId = c.var.userId;
+    const userInfo = updateUser.safeParse(body);
+    //if validation faild then send response with error
+    if (!userInfo.success) {
+      c.status(400);
+      return c.json({
+        error: "Validation error",
+      });
+    }
+    //checking user exist or not
+    const user = await prisme.user.update({
+      where: {
+        id: userId,
+      },
+      data: body,
+    });
+    if (!user) {
+      c.status(404);
+      return c.json({
+        error: "User not found",
+      });
+    }
+    return c.json({
+      message: "User updated successfully",
+      user,
+    });
+  } catch (e) {
+    c.status(500);
+    return c.json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+userRouter.get("/me/", async (c) => {
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    const userId = c.var.userId;
+
+    //checking user exist or not
+    const user = await prisma.user.findFirst({
+      where: {
+        id: userId,
+      },
+      include : {
+        posts : true
+      }
+    });
+
+    if (!user) {
+      c.status(404);
+      return c.json({
+        error: "User not found",
+      });
+    }
+
+    return c.json({
+      user,
     });
   } catch (e) {
     c.status(500);
