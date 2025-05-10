@@ -129,6 +129,7 @@ userRouter.use("/*", async (c, next) => {
     }
     const auth = await verify(token, c.env.SECRET_KEY);
     if (!auth) {
+      c.status(401)
       return c.json({
         message: "You are not logged in",
       });
@@ -140,6 +141,10 @@ userRouter.use("/*", async (c, next) => {
     return c.text("You are not authorized");
   }
 });
+
+userRouter.get("/isAuthenticated", (c) => {
+  return c.text("You are logged in")
+})
 
 userRouter.put("/update/", async (c) => {
   try {

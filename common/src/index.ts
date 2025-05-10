@@ -22,14 +22,14 @@ export const updateUser = z.object({
 
 export const createPost = z.object({
   title: z.string().min(1),
-  content: z.string().min(10),
-  publish: z.boolean().default(false).optional(),
+  content: z.string().min(1),
+  published: z.boolean().default(false).optional(),
 });
 
 export const updatePost = z.object({
   title: z.string().min(1).optional(),
   content: z.string().min(10).optional(),
-  publish: z.boolean().default(false).optional(),
+  published: z.boolean().optional(),
 });
 
 export type SignupUser = z.infer<typeof signupUser>

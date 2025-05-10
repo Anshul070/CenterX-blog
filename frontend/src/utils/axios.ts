@@ -1,7 +1,8 @@
 import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 const instance = axios.create({
-    baseURL: "https://medium.devxhustler.workers.dev/api/v1",
+    baseURL: BACKEND_URL,
 });
 
 export default instance;

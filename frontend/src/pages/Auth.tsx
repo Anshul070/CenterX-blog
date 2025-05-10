@@ -22,10 +22,8 @@ function Auth() {
         email: e.target.elements[0].value,
         password: e.target.elements[1].value,
       };
-      console.log(formdata);
         const res = await axios.post("/user/signin/", formdata);
         const token = res.headers["authorization"];
-        console.log(token);
         if (token) {
           localStorage.setItem("token", token);
         }
@@ -54,7 +52,6 @@ function Auth() {
         password: e.target.elements[2].value,
       };
         const res = await axios.post("/user/signup/", formdata);
-        console.log(res.data);
         if (res.status === 200) {
             
         }

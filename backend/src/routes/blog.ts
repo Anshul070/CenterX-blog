@@ -40,28 +40,31 @@ blogRouter.use("/*", async (c, next) => {
 })
 
 // Uploading new post
-blogRouter.post("/", async (c) => {
+blogRouter.post("/new/", async (c) => {
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
 
     //Get body and run post validation
     const body = await c.req.json();
     const newPost = createPost.safeParse(body);
+    console.log(newPost.error)
 
     //if validation fail return
     if (!newPost.success) {
       c.status(400);
       return c.json({
         message: "Validaition error",
+        error : newPost.error.issues[0].message
       });
     }
+    console.log(newPost.data);
 
     //If validation pass then create post
     const res = await prisma.post.create({
       data: {
         title: newPost.data.title,
         content: newPost.data.content,
-        published: newPost.data.publish,
+        published: newPost.data.published,
         // authorId : c.var.userId
         author: {
           connect: {
@@ -102,13 +105,14 @@ blogRouter.get("/bulk/", async (c) => {
         author: {
           select : {
             name : true,
-            username: true
+            username: true,
+            bio: true
           }
         }
       }
     });
     return c.json({
-      published: false,
+      published: true,
       posts: res,
     });
   } catch (e) {
@@ -172,6 +176,7 @@ blogRouter.get("/:id", async (c) => {
           select : {
             name : true,
             username: true,
+            bio: true
           }
         }
       }
@@ -186,13 +191,13 @@ blogRouter.get("/:id", async (c) => {
 });
 
 //Updating the blog
-blogRouter.put("/:id", async (c) => {
+blogRouter.put("/:id/update", async (c) => {
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
 
     //Getting data from body
     const body = await c.req.json();
-    const updatedPost = updatePost.safeParse(body)
+    const updatedPost = updatePost.safeParse(body);
 
     if(!updatedPost.success){
         c.status(400)
@@ -200,6 +205,8 @@ blogRouter.put("/:id", async (c) => {
             message : "Validation error"
         })
     }
+
+    console.log(updatedPost.data, c.req.param().id, c.var.userId,);
     //Updating the post
     const res = await prisma.post.update({
       where: {
@@ -216,8 +223,12 @@ blogRouter.put("/:id", async (c) => {
     }
     return c.json({
       message: "Post updated successfully",
+      initialData : body,
+      parseBody : updatedPost.data,
+      res
     });
   } catch (e) {
+    console.log(e);
     c.status(500);
     return c.json({
       message: "Internal Server Error",
@@ -226,7 +237,7 @@ blogRouter.put("/:id", async (c) => {
 });
 
 //Deleting the blog
-blogRouter.delete("/:id", async (c) => {
+blogRouter.delete("/:id/delete", async (c) => {
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
 

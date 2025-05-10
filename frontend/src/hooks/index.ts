@@ -9,6 +9,8 @@ type Blog = {
   published: boolean;
   author: {
     username: string;
+    name: string;
+    bio? : string;
   };
 };
 
@@ -71,6 +73,8 @@ export const useBlog = (id: string) => {
     published: false,
     author: {
       username: "",
+      bio: "",
+      name: "",
     },
   });
   const [loading, setLoading] = useState(true);
@@ -84,7 +88,6 @@ export const useBlog = (id: string) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setBlog(res.data);
       })
       .catch((e) => {
@@ -122,7 +125,6 @@ export const useUserInfo = () => {
         },
       })
       .then((res) => {
-        console.log(res.data.user);
         setUser(res.data.user);
       })
       .catch((e) => {

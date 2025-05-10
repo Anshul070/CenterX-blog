@@ -1,60 +1,104 @@
-import React from "react";
-import { useNavigate } from "react-router";
-import { getFormattedDate } from "../utils/date";
+import React, { useState } from "react";
+import { createBlog, updateBlog } from "../utils/handlers";
 
-interface BlogCardProps {
-  id : string;
-  title: string;
-  content: string;
-  authorName: string;
-  createdAt: string;
-  published?: boolean;
-}
+type BlogCardProps = {
+  id?: string;
+  title?: string;
+  content?: string;
+  published?: string;
+  actionType: "edit" | "create";
+};
 
-function BlogCard(info: BlogCardProps) {
-  const navigate = useNavigate();
+function BlogCard(cardInfo: BlogCardProps) {
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState({
+    title: cardInfo.title ? cardInfo.title : "",
+    content: cardInfo.content ? cardInfo.content : "",
+    published: cardInfo.published ? cardInfo.published : "draft",
+  });
+
   return (
-    <div className="w-full h-50 flex flex-col gap-4 cursor-pointer" onClick={()=>{
-      navigate(`/blogs/${info.id}`);
-    }}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center  gap-6 text-sm">
-        <Avatar name={info.authorName}/>
-        {info.authorName} {Circle()}{" "}
-        <span className="opacity-50">{getFormattedDate(info.createdAt)}</span>
-      </div>
-        <div className="flex items-center gap-2 mt-2">
-          {info.published !== undefined ? (info.published ? (
-            <span className="text-sm text-blue-400">Published</span>
-          ) : (
-            <span className="text-sm text-gray-400">Draft</span>
-          )) : null}
+    <div>
+      {error && (
+        <div className="absolute w-full translate-y-4">
+          <div
+            className="bg-red-100 border  border-red-400 text-red-700 mx-96 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <span className="block sm:inline">{error}</span>
+            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+              <svg
+                className="fill-current h-6 w-6 text-red-500"
+                role="button"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <title>Close</title>
+                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+              </svg>
+            </span>
+          </div>
         </div>
-      </div>
-      <h1 className="text-3xl font-bold text-black">{info.title}</h1>
-      <p className="text-sm text-justify text-gray-500">
-        {info.content.slice(0, 250)}...
-      </p>
-      <hr className="opacity-60 border-gray-400" />
+      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          cardInfo.actionType === "create"
+            ? createBlog(
+                { ...info, published: info.published === "published" },
+                setError
+              )
+            : updateBlog({ ...info, published: info.published === "published" }, cardInfo.id ? cardInfo.id : "", setError);
+        }}
+        className="bg-white px-52 py-10 flex flex-col gap-6"
+      >
+        {/* Title */}
+        <input
+          value={info.title}
+          onChange={(e) => {
+            setInfo((prev) => {
+              return { ...prev, title: e.target.value };
+            });
+          }}
+          type="text"
+          id="title"
+          placeholder="Title"
+          className="text-6xl font-serif placeholder:text-gray-400 border-gray-400 outline-none w-full border-x-2  pl-6"
+        />
+        <textarea
+          value={info.content}
+          onChange={(e) => {
+            setInfo((prev) => {
+              return { ...prev, content: e.target.value };
+            });
+          }}
+          id="content"
+          placeholder="Tell your story..."
+          className="w-full text-3xl min-h-60 font-serif border-x-2 placeholder:text-gray-400 border-gray-400 outline-none pl-6"
+          rows={6}
+        />
+        <div className="flex gap-4 text-sm">
+          <select
+            onChange={(e) => {
+              setInfo((prev) => {
+                return { ...prev, published: e.target.value };
+              });
+            }}
+            className="appearance-none outline-0 px-4 py-2 border rounded-full text-center text-gray-500"
+            defaultValue={info.published}
+            name="published"
+            id="published"
+          >
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+          <input
+            type="submit"
+            className="bg-green-600 w-fit px-6 py-1 text-white rounded-full"
+          />
+        </div>
+      </form>
     </div>
-  );
-}
-
-export function Circle() {
-  return <div className="w-1 h-1 bg-zinc-800 rounded-full"></div>;
-}
-
-export function Avatar({ name, size = 4 }: { name: string; size?: number }) {
-  return (
-    <h3
-      className={`bg-indigo-600 rounded-full text-white flex items-center justify-center`}
-      style={{
-        width : `${size*5}px`,
-        height: `${size*5}px`,
-      }}
-    >
-      {name.charAt(0)}
-    </h3>
   );
 }
 
