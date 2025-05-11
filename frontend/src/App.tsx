@@ -11,14 +11,53 @@ import Header from "./components/Header";
 function App() {
   return (
     <main className="w-full font-['Montserrat']">
-      <Header />
       <Routes>
         <Route path="/" element={<Auth />} />
-        <Route path="/blogs" element={<ProtectedRoute><Blogs/></ProtectedRoute>} />
-        <Route path="/blogs/:id" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
-        <Route path="/profile/" element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
-        <Route path="/blogs/new/" element={<ProtectedRoute><NewBlog /></ProtectedRoute>}/>
-        <Route path="/blogs/update/:id" element={<ProtectedRoute><EditBlog /></ProtectedRoute>}/>
+        <Route
+          path="/blogs"
+          element={
+            <ProtectedRoute>
+              <Header />
+              <Blogs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/blogs/:id"
+          element={
+            <ProtectedRoute>
+              <Header />
+              <Blog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/"
+          element={
+            <ProtectedRoute>
+              <Header />
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/blogs/new/"
+          element={
+            <ProtectedRoute>
+              <Header />
+              <NewBlog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/blogs/update/:id"
+          element={
+            <ProtectedRoute>
+              <Header />
+              <EditBlog />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </main>
   );
