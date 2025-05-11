@@ -42,10 +42,10 @@ function Blogs() {
   return (
     <div className="bg-white">
       <div className="px-4 sm:px-6 md:px-20 lg:px-40 xl:px-60 py-6 flex flex-col gap-8">
-        <div className="fixed z-100 w-full flex justify-center pointer-events-none">
-        {message && (
+        <div className="fixed z-100 w-full px-14 left-0 flex justify-center pointer-events-none">
+        {(
           <div
-            className="w-fit h-fit m-4 mt-10 border-yellow-400 border p-4 text-sm  rounded-lg bg-yellow-50 text-yellow-400"
+            className="w-fit h-fit mt border-yellow-400 border p-4  rounded-lg bg-yellow-50 text-yellow-400"
             role="alert"
           >
             <span className="font-medium">Informational :</span> {message}

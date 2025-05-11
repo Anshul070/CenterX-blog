@@ -4,12 +4,20 @@ import axios from "../utils/axios";
 import AuthCard from "../components/AuthCard";
 import { useNavigate } from "react-router";
 import { OrbitProgress } from "react-loading-indicators";
+import { useAuth } from "../hooks/auth";
 type Mode = "signup" | "signin";
 function Auth() {
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoading } = useAuth();
+    useEffect(() => {
+      if (!isLoading && isAuthenticated) {
+        navigate('/blogs');
+      }
+    }, [isAuthenticated, isLoading, navigate]);
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
       setError("");
@@ -48,8 +56,8 @@ function Auth() {
             }
           });
         }
-      } catch (err) {
-        setError(err as any);
+      } catch (err: any) {
+        setError(err.response.data.error);
         setLoading(false);
       }
     },
@@ -71,7 +79,7 @@ function Auth() {
       const formdata: SignupUser = userInfo
       try {
       const res = await axios.post("/user/signup/", formdata);
-      if (res.status === 401) {
+      if (res.status === 400) {
           alert("Invalid credentials");
           setLoading(false);
           return;
@@ -87,8 +95,8 @@ function Auth() {
             }
           });
         }
-      } catch (err) {
-        setError(err as any);
+      } catch (err: any) {
+        setError(err.response.data.error);
         setLoading(false);
       }
     },
@@ -98,6 +106,18 @@ function Auth() {
     tagline:
       "Join CenterX and become part of a community where your thoughts matter. Create your account to start writing, sharing, and connecting.",
   };
+  if (isLoading) {
+      return (
+        <div className="h-screen bg-white flex items-center justify-center">
+          <OrbitProgress
+            color="#00000070"
+            size="medium"
+            text="Loading"
+            textColor="#000"
+          />
+        </div>
+      );
+    }
 
   return (
     <>
@@ -113,26 +133,16 @@ function Auth() {
           textColor="#000"
         />
       </div>
-      {error && (
-        <div className="absolute top-4 left-[50%] -translate-x-[50%] px-4 sm:px-10 md:px-20 xl:px-52">
+      <div className="fixed z-100 mt-4 w-full px-14 left-0 flex justify-center pointer-events-none">
+        {error && (
           <div
-            className="bg-red-100 border w-108 border-red-400 text-red-700 px-4 py-3 rounded relative"
+            className="w-fit h-fit  border-red-400 border p-4  rounded-lg bg-red-50 text-red-400"
             role="alert"
           >
-            <span className="block sm:inline">{error.toString()}</span>
-            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-              <svg
-                className="fill-current h-6 w-6 text-red-500"
-                role="button"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <title>Close</title>
-              </svg>
-            </span>
+            <span className="font-medium">Error :</span> {error.toString()}
           </div>
-        </div>
-      )}
+        )}
+      </div>
       {mode === "signup" ? (
         <AuthCard key={1} info={signupInfo} />
       ) : (
