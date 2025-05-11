@@ -8,8 +8,7 @@ import { useUserInfo } from "../hooks";
 function Header() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const {loading, user} = useUserInfo();
-
+  const {loading, error ,user} = useUserInfo();
   const menuItems = [
     {
       title: "Profile",
@@ -25,6 +24,11 @@ function Header() {
       style: "text-red-600",
     },
   ];
+
+  if(error){
+    logout();
+    navigate("/")
+  }
 
   return (
     <header className="w-full border-b border-gray-200 bg-white shadow-sm">

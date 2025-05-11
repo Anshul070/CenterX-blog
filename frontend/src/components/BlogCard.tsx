@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createBlog, updateBlog } from "../utils/handlers";
 import { useNavigate } from "react-router";
+import { OrbitProgress } from "react-loading-indicators";
 
 type BlogCardProps = {
   id?: string;
@@ -13,6 +14,7 @@ type BlogCardProps = {
 function BlogCard(cardInfo: BlogCardProps) {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [isPosting, setIsPosting] = useState(false);
   const [info, setInfo] = useState({
     title: cardInfo.title ? cardInfo.title : "",
     content: cardInfo.content ? cardInfo.content : "",
@@ -28,27 +30,27 @@ function BlogCard(cardInfo: BlogCardProps) {
 
   return (
     <div className="relative">
-      {error && (
-        <div className="absolute w-full top-4 left-0 px-4 sm:px-10 md:px-20 xl:px-52">
-          <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-            role="alert"
-          >
-            <span className="block sm:inline">{error}</span>
-            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-              <svg
-                className="fill-current h-6 w-6 text-red-500"
-                role="button"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <title>Close</title>
-                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-              </svg>
-            </span>
-          </div>
+      {isPosting && (
+        <div className="w-full h-screen top-0 fixed flex items-center justify-center bg-gray-300/50 backdrop-blur-[2px]">
+          <OrbitProgress
+            color="#00000070"
+            size="medium"
+            text="Posting"
+            textColor="#000"
+          />
         </div>
       )}
+      <div className="fixed z-100 w-full flex justify-center pointer-events-none">
+        {error && (
+          <div
+            className="w-fit h-fit m-4 mt-10 border-red-400 border p-4 text-sm  rounded-lg bg-red-50 text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error :</span> {error}
+          </div>
+        )}
+      </div>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -56,20 +58,22 @@ function BlogCard(cardInfo: BlogCardProps) {
             ? createBlog(
                 { ...info, published: info.published === "published" },
                 setError,
-                navigate
+                navigate,
+                setIsPosting
               )
             : updateBlog(
                 { ...info, published: info.published === "published" },
                 cardInfo.id ? cardInfo.id : "",
                 setError,
-                navigate
+                navigate,
+                setIsPosting
               );
         }}
         className="bg-white w-full mx-auto px-4 sm:px-10 md:px-20 xl:px-52 py-10 flex flex-col gap-6"
       >
         {/* Title */}
         <textarea
-        onInput={handleResize}
+          onInput={handleResize}
           value={info.title}
           onChange={(e) => {
             setInfo((prev) => ({

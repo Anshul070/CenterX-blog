@@ -115,7 +115,7 @@ export const useUserInfo = () => {
   });
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     axios
@@ -128,7 +128,8 @@ export const useUserInfo = () => {
         setUser(res.data.user);
       })
       .catch((e) => {
-        setError(e);
+        console.log(e)
+        setError(true);
       })
       .finally(() => {
         setLoading(false);

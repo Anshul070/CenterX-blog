@@ -1,6 +1,5 @@
 import { useParams } from "react-router";
 import { useBlog } from "../hooks";
-import Header from "../components/Header";
 import { Avatar } from "../components/BlogDisplayCard";
 import { getFormattedDate } from "../utils/date";
 import { OrbitProgress } from "react-loading-indicators";
@@ -28,7 +27,6 @@ function Blog() {
 
   return (
     <div className="w-full flex flex-col min-h-screen bg-white">
-      <Header />
       <div className="px-6 sm:px-8 md:px-16 lg:px-28 xl:px-40 pt-10 pb-20">
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Main Content */}
@@ -56,7 +54,12 @@ function Blog() {
                 <h1 className="font-semibold text-xs text-gray-400">{blog.author.username.toLowerCase()}</h1>
               </div>
             </div>
-            <p className="text-sm text-gray-500">{blog.author.bio}</p>
+            <p className="block text-sm text-wrap w-1/2 text-gray-500">{blog.author.bio?.split(" ").map(word => {
+              if(word.length > 19) {
+                return word.slice(0, 18) + "... "
+              } 
+              return word + " "
+            })}</p>
           </div>
         </div>
       </div>

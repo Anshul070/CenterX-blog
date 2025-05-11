@@ -1,10 +1,10 @@
-import Header from "../components/Header";
 import BlogCard from "../components/BlogCard";
 import { useBlog } from "../hooks";
 import { useParams } from "react-router";
 import { OrbitProgress } from "react-loading-indicators";
 
 function EditBlog() {
+  
   const { id } = useParams();
   const { blog, loading } = useBlog(id as string);
   if (loading) {
@@ -21,7 +21,6 @@ function EditBlog() {
   }
   return (
     <div>
-      <Header />
       <BlogCard
         id={id}
         actionType="edit"

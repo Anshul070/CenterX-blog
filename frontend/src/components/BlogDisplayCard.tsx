@@ -14,6 +14,7 @@ interface BlogDisplayCardProps {
     title: string;
     action: () => void;
     style: string;
+    loading? : boolean
   }[];
 }
 
@@ -28,11 +29,15 @@ function BlogDisplayCard(info: BlogDisplayCardProps) {
       }}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-3 sm:gap-6 text-sm flex-wrap">
+        <div className="flex items-center gap-2 text-sm flex-wrap">
           <Avatar name={info.authorName} />
-          <span>{info.authorName}</span>
-          {Circle()}
-          <span className="opacity-50">{getFormattedDate(info.createdAt)}</span>
+          <div className="flex-col sm:flex-row flex sm:gap-2">
+            <span>{info.authorName}</span>
+            <span className="flex items-center gap-1 opacity-50 text-[10px] md:text-sm">
+              {Circle()}
+              {getFormattedDate(info.createdAt)}
+            </span>
+          </div>
         </div>
         {info.published !== undefined && (
           <div className="flex items-center gap-2 z-10">
@@ -43,7 +48,12 @@ function BlogDisplayCard(info: BlogDisplayCardProps) {
             >
               {info.published ? "Published" : "Draft"}
             </span>
-            <span className="text-lg group relative text-gray-600">
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="text-lg group bg-re-500 relative text-gray-600"
+            >
               <HiOutlineDotsVertical />
               <Menubar menu={info.menu || []} />
             </span>

@@ -14,9 +14,11 @@ export const useAuth = () => {
             if(res.status === 200){
                 setIsAuthenticated(true);
             }
-        }).catch((e)=>{
-            
-            setIsError(e);
+            if(res.status === 404){
+                setIsError(true);
+            }
+        }).catch(()=>{
+            setIsError(true);
         }).finally(()=>{
             setIsLoading(false);
         });

@@ -6,10 +6,12 @@ import Profile from "./pages/Profile";
 import NewBlog from "./pages/NewBlog";
 import EditBlog from "./pages/EditBlog";
 import ProtectedRoute from "./ProtectedRoute";
+import Header from "./components/Header";
 
 function App() {
   return (
     <main className="w-full font-['Montserrat']">
+      <Header />
       <Routes>
         <Route path="/" element={<Auth />} />
         <Route path="/blogs" element={<ProtectedRoute><Blogs/></ProtectedRoute>} />

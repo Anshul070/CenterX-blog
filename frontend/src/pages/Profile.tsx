@@ -1,4 +1,3 @@
-import Header from "../components/Header";
 import { useUserInfo } from "../hooks";
 import BlogDisplayCard from "../components/BlogDisplayCard";
 import { getFormattedDate } from "../utils/date";
@@ -10,13 +9,29 @@ import { OrbitProgress } from "react-loading-indicators";
 function Profile() {
   const navigate = useNavigate();
   const { loading, user, refetchInfo } = useUserInfo();
+  const [ProfileUpdating, setProfileUpdating] = useState({
+    isUpdating: false,
+    message: "",
+    errorMsg: ""
+  });
+  const [postStatus, setPostStatus] = useState({
+    isUpdating: false,
+    message: "",
+    errorMsg: ""
+  });
+  const [postDeleting, setPostDeleting] = useState({
+    isUpdating: false,
+    message: "",
+    errorMsg: ""
+  });
 
   const [userInfo, setUserInfo] = useState<{ field: string; value: string }[]>(
     []
   );
   const [activeSection, setActiveSection] = useState<"posts" | "profile">(
-    "posts"
+    "profile"
   );
+  console.log(ProfileUpdating.message)
 
   const initialInfo = loading
     ? {}
@@ -53,7 +68,35 @@ function Profile() {
 
   return (
     <section className="bg-white min-h-screen">
-      <Header />
+      <div className="fixed z-100 w-full flex justify-center pointer-events-none">
+        {ProfileUpdating.message !=="" && (
+          <div
+            className="w-fit h-fit m-4 mt-10 border-blue-400 border p-4 text-sm  rounded-lg bg-blue-50 text-blue-400"
+            role="alert"
+          >
+            <span className="font-medium">Sucess</span>{" "}
+            {ProfileUpdating.message}
+          </div>
+        )}
+        {postStatus.message !=="" && (
+          <div
+            className="w-fit h-fit m-4 mt-10 border-blue-400 border p-4 text-sm  rounded-lg bg-blue-50 text-blue-400"
+            role="alert"
+          >
+            <span className="font-medium">Sucess</span>{" "}
+            {postStatus.message}
+          </div>
+        )}
+        {postDeleting.message !=="" && (
+          <div
+            className="w-fit h-fit m-4 mt-10 border-blue-400 border p-4 text-sm  rounded-lg bg-blue-50 text-blue-400"
+            role="alert"
+          >
+            <span className="font-medium">Sucess</span>{" "}
+            {postDeleting.message}
+          </div>
+        )}
+      </div>
 
       <div className="flex flex-col lg:flex-row gap-10 px-4 sm:px-10 md:px-20 lg:px-32 pt-6">
         {/* Left Column (Posts) */}
@@ -74,16 +117,6 @@ function Profile() {
           <div className="flex items-center gap-4 text-sm text-gray-600">
             <div className="lg:hidden flex justify-center gap-4 py-4">
               <button
-                onClick={() => setActiveSection("posts")}
-                className={`px-4 py-2 font-semibold text-gray-700 ${
-                  activeSection === "profile"
-                    ? "border-b-0"
-                    : "border-b-2 border-gray-300"
-                }`}
-              >
-                Posts
-              </button>
-              <button
                 onClick={() => setActiveSection("profile")}
                 className={`px-4 py-2  font-semibold text-gray-700 ${
                   activeSection === "profile"
@@ -92,6 +125,16 @@ function Profile() {
                 }`}
               >
                 Profile Info
+              </button>
+              <button
+                onClick={() => setActiveSection("posts")}
+                className={`px-4 py-2 font-semibold text-gray-700 ${
+                  activeSection === "profile"
+                    ? "border-b-0"
+                    : "border-b-2 border-gray-300"
+                }`}
+              >
+                Posts
               </button>
             </div>
           </div>
@@ -115,8 +158,10 @@ function Profile() {
                 menu={[
                   {
                     title: blog.published ? "Draft" : "Publish",
-                    action: () => changePostStatus(blog.id, blog.published, refetchInfo),
+                    action: () =>
+                      !postStatus.isUpdating && changePostStatus(blog.id, blog.published, refetchInfo, setPostStatus),
                     style: "text-gray-700",
+                    loading : postStatus.isUpdating
                   },
                   {
                     title: "Update",
@@ -125,8 +170,9 @@ function Profile() {
                   },
                   {
                     title: "Delete",
-                    action: () => deletePost(blog.id, refetchInfo),
+                    action: () => !postDeleting.isUpdating && deletePost(blog.id, refetchInfo, setPostDeleting),
                     style: "text-red-600",
+                    loading: postDeleting.isUpdating
                   },
                 ]}
               />
@@ -142,12 +188,24 @@ function Profile() {
             lg:block
           `}
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 relative">
+            {ProfileUpdating.isUpdating && (
+              <div className="w-[104%] h-[104%] -translate-x-[50%] -left-[-50%] -translate-y-[50%] -top-[-50%] rounded absolute bg-gray-300/50 backdrop-blur-[2px] flex items-center justify-center">
+                <OrbitProgress
+                  color="#00000070"
+                  size="small"
+                  text="Loading"
+                  textColor="#000"
+                />
+              </div>
+            )}
             <h2 className="bg-indigo-600 text-white text-center py-4 text-lg rounded">
               Profile Information
             </h2>
             <form
-              onSubmit={(e) => updateUser(e, initialInfo)}
+              onSubmit={(e) =>
+                updateUser(e, initialInfo, refetchInfo, setProfileUpdating)
+              }
               className="flex flex-col gap-4"
             >
               {userInfo.map((info, index) => (
@@ -157,17 +215,30 @@ function Profile() {
                   className="flex flex-col text-sm font-medium text-gray-700"
                 >
                   {info.field}
-                  <input
-                    id={info.field}
-                    type="text"
-                    value={info.value}
-                    onChange={(e) => {
-                      const newInfo = [...userInfo];
-                      newInfo[index].value = e.target.value;
-                      setUserInfo(newInfo);
-                    }}
-                    className="border border-gray-300 rounded px-3 py-2 mt-1 text-gray-600"
-                  />
+                  {info.field !== "Bio" ? (
+                    <input
+                      id={info.field}
+                      type="text"
+                      value={info.value}
+                      onChange={(e) => {
+                        const newInfo = [...userInfo];
+                        newInfo[index].value = e.target.value;
+                        setUserInfo(newInfo);
+                      }}
+                      className="border border-gray-300 rounded px-3 py-2 mt-1 text-gray-600"
+                    />
+                  ) : (
+                    <textarea
+                      id={info.field}
+                      value={info.value}
+                      onChange={(e) => {
+                        const newInfo = [...userInfo];
+                        newInfo[index].value = e.target.value;
+                        setUserInfo(newInfo);
+                      }}
+                      className="border min-h-46 border-gray-300 rounded px-3 py-2 mt-1 text-gray-600"
+                    />
+                  )}
                 </label>
               ))}
               <button
