@@ -71,29 +71,56 @@ function Profile() {
       <div className="fixed z-100 w-full flex justify-center pointer-events-none">
         {ProfileUpdating.message !=="" && (
           <div
-            className="w-fit h-fit m-4 mt-10 border-blue-400 border p-4 text-sm  rounded-lg bg-blue-50 text-blue-400"
+            className="w-fit h-fit m-4 mt-10 border-green-400 border p-4 text-sm  rounded-lg bg-green-50 text-green-400"
             role="alert"
           >
-            <span className="font-medium">Sucess</span>{" "}
+            <span className="font-medium">Sucess:</span>{" "}
             {ProfileUpdating.message}
+          </div>
+        )}
+        {ProfileUpdating.errorMsg !=="" && (
+          <div
+            className="w-fit h-fit m-4 mt-10 border-red-400 border p-4 text-sm  rounded-lg bg-red-50 text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error:</span>{" "}
+            {ProfileUpdating.errorMsg}
           </div>
         )}
         {postStatus.message !=="" && (
           <div
-            className="w-fit h-fit m-4 mt-10 border-blue-400 border p-4 text-sm  rounded-lg bg-blue-50 text-blue-400"
+            className="w-fit h-fit m-4 mt-10 border-green-400 border p-4 text-sm  rounded-lg bg-green-50 text-green-400"
             role="alert"
           >
-            <span className="font-medium">Sucess</span>{" "}
+            <span className="font-medium">Sucess:</span>{" "}
             {postStatus.message}
+          </div>
+        )}
+        {postStatus.errorMsg !=="" && (
+          <div
+            className="w-fit h-fit m-4 mt-10 border-red-400 border p-4 text-sm  rounded-lg bg-red-50 text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error:</span>{" "}
+            {postStatus.errorMsg}
           </div>
         )}
         {postDeleting.message !=="" && (
           <div
-            className="w-fit h-fit m-4 mt-10 border-blue-400 border p-4 text-sm  rounded-lg bg-blue-50 text-blue-400"
+            className="w-fit h-fit m-4 mt-10 border-green-400 border p-4 text-sm  rounded-lg bg-green-50 text-green-400"
             role="alert"
           >
-            <span className="font-medium">Sucess</span>{" "}
+            <span className="font-medium">Sucess:</span>{" "}
             {postDeleting.message}
+          </div>
+        )}
+        {postDeleting.errorMsg !=="" && (
+          <div
+            className="w-fit h-fit m-4 mt-10 border-red-400 border p-4 text-sm  rounded-lg bg-red-50 text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">Error:</span>{" "}
+            {postDeleting.errorMsg}
           </div>
         )}
       </div>

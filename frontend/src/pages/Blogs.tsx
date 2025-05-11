@@ -45,7 +45,7 @@ function Blogs() {
         <div className="fixed z-100 w-full px-14 left-0 flex justify-center pointer-events-none">
         {(
           <div
-            className="w-fit h-fit mt border-yellow-400 border p-4  rounded-lg bg-yellow-50 text-yellow-400"
+            className="w-fit h-fit mt border-blue-400 border p-4  rounded-lg bg-blue-50 text-blue-400"
             role="alert"
           >
             <span className="font-medium">Informational :</span> {message}

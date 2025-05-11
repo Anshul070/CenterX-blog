@@ -43,9 +43,9 @@ export const updateUser = async (
   if (Object.keys(updatedFields).length === 0) {
     UpdateSetter(
       setIsProfileUpdating,
-      "Please change fields values first.",
+      "",
       false,
-      ""
+      "Please change fields values first."
     );
     return;
   }
@@ -91,9 +91,7 @@ export const changePostStatus = async (
     );
     refetchInfo();
   } catch (err) {
-    console.error("Something went wrong");
-    console.error(err);
-    UpdateSetter(setPostStatus, "", false, "there is some error");
+    UpdateSetter(setPostStatus, "", false, "Internal Error");
   }
   UpdateSetter(setPostStatus, "Status changed", false, "");
 };
@@ -121,7 +119,6 @@ export const deletePost = async (
       refetchInfo();
     }
   } catch (err) {
-    console.error("Something went wrong");
     UpdateSetter(setPostDeleting, "", false, "there is some error");
   }
     UpdateSetter(setPostDeleting, "Post deleted Successfully", false, "");
