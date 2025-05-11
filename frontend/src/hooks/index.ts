@@ -135,5 +135,23 @@ export const useUserInfo = () => {
       });
   }, []);
 
-  return { user, loading, error };
+  const refetchInfo = () => {
+    axios
+      .get(`/user/me/`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setUser(res.data.user);
+      })
+      .catch((e) => {
+        setError(e);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  return { user, loading, error, refetchInfo };
 };

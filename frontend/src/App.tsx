@@ -9,7 +9,7 @@ import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
-    <main className="w-full">
+    <main className="w-full font-['Montserrat']">
       <Routes>
         <Route path="/" element={<Auth />} />
         <Route path="/blogs" element={<ProtectedRoute><Blogs/></ProtectedRoute>} />

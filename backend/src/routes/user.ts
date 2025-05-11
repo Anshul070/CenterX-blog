@@ -52,6 +52,9 @@ userRouter.post("/signup/", async (c) => {
         password: password,
       },
     });
+    const token = await sign({ id: res.id }, c.env.SECRET_KEY);
+    c.res.headers.set("Authorization", `Bearer ${token}`);
+    c.res.headers.set("Access-Control-Expose-Headers", "Authorization");
     return c.json({
       message: "'user created successfully'",
       user: res,
@@ -89,15 +92,15 @@ userRouter.post("/signin/", async (c) => {
 
     //if not then return with error
     if (!existUser) {
-      c.status(404);
+      c.status(401);
       return c.json({
-        error: "User not found",
+        error: "Invalid credentials",
       });
     }
 
     //if user found then compare password
     if (existUser.password !== password) {
-      c.status(404);
+      c.status(401);
       return c.json({
         error: "Password doesn't match",
       });
@@ -109,6 +112,7 @@ userRouter.post("/signin/", async (c) => {
 
     return c.json({
       jwt: token,
+      data : existUser
     });
   } catch (e) {
     c.status(500);
@@ -129,7 +133,7 @@ userRouter.use("/*", async (c, next) => {
     }
     const auth = await verify(token, c.env.SECRET_KEY);
     if (!auth) {
-      c.status(401)
+      c.status(401);
       return c.json({
         message: "You are not logged in",
       });
@@ -143,8 +147,8 @@ userRouter.use("/*", async (c, next) => {
 });
 
 userRouter.get("/isAuthenticated", (c) => {
-  return c.text("You are logged in")
-})
+  return c.text("You are logged in");
+});
 
 userRouter.put("/update/", async (c) => {
   try {
@@ -194,9 +198,9 @@ userRouter.get("/me/", async (c) => {
       where: {
         id: userId,
       },
-      include : {
-        posts : true
-      }
+      include: {
+        posts: true,
+      },
     });
 
     if (!user) {

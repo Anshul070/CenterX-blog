@@ -9,7 +9,6 @@ interface AuthProps {
 function ProtectedRoute({ children }: AuthProps) {
   const { isAuthenticated, isLoading, isError } = useAuth();
   const navigate = useNavigate();
-  console.log(isAuthenticated)
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       navigate('/');

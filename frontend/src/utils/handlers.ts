@@ -37,7 +37,7 @@ export const updateUser = async (e: any, initialInfo: UpdateUser) => {
   }
 };
 
-export const changePostStatus = async (id: string, published: boolean) => {
+export const changePostStatus = async (id: string, published: boolean, refetchInfo : () => void) => {
   try {
     await axios.put(
       `/blog/${id}/update`,
@@ -48,53 +48,65 @@ export const changePostStatus = async (id: string, published: boolean) => {
         },
       }
     );
+    refetchInfo();
   } catch (err) {
     console.error("Something went wrong");
     console.error(err);
   }
 }
 
-export const deletePost = async (id: string) => {
+export const deletePost = async (id: string, refetchInfo : () => void) => {
   try {
-    await axios.delete(`/blog/${id}/delete`, {
+    const res = await axios.delete(`/blog/${id}/delete`, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
     });
+    if (res.status === 200) {
+      refetchInfo();
+    }
   } catch (err) {
     console.error("Something went wrong");
     console.error(err);
   }
 };
 
-export const createBlog = async(info: CreatePost, setError : any) => {
+export const createBlog = async(info: CreatePost, setError : any, navigate : any) => {
   if (!info.title || !info.content) {
     errorSetter(setError, "Title and content are required" )
     return;
   }
   try {
-    await axios.post(`/blog/new/`,info, {
+    const res = await axios.post(`/blog/new/`,info, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
     });
+    
+    if(res.status === 200) {
+      navigate(`/blogs/${res.data.post.id}`);
+    }
   } catch (err) {
     errorSetter(setError, "Something went wrong");
     console.error(err);
   }
 }
 
-export const updateBlog = async(info: CreatePost,id : string, setError : any) => {
+export const updateBlog = async(info: CreatePost,id : string, setError : any, navigate : any) => {
   if (!info.title || !info.content) {
     errorSetter(setError, "Title and content are required" )
     return;
   }
   try {
-    await axios.put(`/blog/${id}/update`,info, {
+    const res = await axios.put(`/blog/${id}/update`,info, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
     });
+
+    if(res.status === 200) {
+      navigate(`/blogs/${id}`);
+    }
   } catch (err) {
     errorSetter(setError, "Something went wrong");
     console.error(err);

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createBlog, updateBlog } from "../utils/handlers";
+import { useNavigate } from "react-router";
 
 type BlogCardProps = {
   id?: string;
@@ -10,6 +11,7 @@ type BlogCardProps = {
 };
 
 function BlogCard(cardInfo: BlogCardProps) {
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState({
     title: cardInfo.title ? cardInfo.title : "",
@@ -17,12 +19,19 @@ function BlogCard(cardInfo: BlogCardProps) {
     published: cardInfo.published ? cardInfo.published : "draft",
   });
 
+  // Function to resize the textarea dynamically
+  const handleResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const target = e.target as HTMLTextAreaElement;
+    target.style.height = "auto"; // Reset height
+    target.style.height = `${target.scrollHeight}px`; // Set height based on content
+  };
+
   return (
-    <div>
+    <div className="relative">
       {error && (
-        <div className="absolute w-full translate-y-4">
+        <div className="absolute w-full top-4 left-0 px-4 sm:px-10 md:px-20 xl:px-52">
           <div
-            className="bg-red-100 border  border-red-400 text-red-700 mx-96 px-4 py-3 rounded relative"
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
             role="alert"
           >
             <span className="block sm:inline">{error}</span>
@@ -46,43 +55,55 @@ function BlogCard(cardInfo: BlogCardProps) {
           cardInfo.actionType === "create"
             ? createBlog(
                 { ...info, published: info.published === "published" },
-                setError
+                setError,
+                navigate
               )
-            : updateBlog({ ...info, published: info.published === "published" }, cardInfo.id ? cardInfo.id : "", setError);
+            : updateBlog(
+                { ...info, published: info.published === "published" },
+                cardInfo.id ? cardInfo.id : "",
+                setError,
+                navigate
+              );
         }}
-        className="bg-white px-52 py-10 flex flex-col gap-6"
+        className="bg-white w-full mx-auto px-4 sm:px-10 md:px-20 xl:px-52 py-10 flex flex-col gap-6"
       >
         {/* Title */}
-        <input
+        <textarea
+        onInput={handleResize}
           value={info.title}
           onChange={(e) => {
-            setInfo((prev) => {
-              return { ...prev, title: e.target.value };
-            });
+            setInfo((prev) => ({
+              ...prev,
+              title: e.target.value,
+            }));
           }}
-          type="text"
           id="title"
           placeholder="Title"
-          className="text-6xl font-serif placeholder:text-gray-400 border-gray-400 outline-none w-full border-x-2  pl-6"
+          className="text-4xl sm:text-5xl md:text-6xl font-serif placeholder:text-gray-400 border-gray-400 outline-none w-full border-x-2 pl-4 sm:pl-6"
         />
+
         <textarea
           value={info.content}
           onChange={(e) => {
-            setInfo((prev) => {
-              return { ...prev, content: e.target.value };
-            });
+            setInfo((prev) => ({
+              ...prev,
+              content: e.target.value,
+            }));
           }}
+          onInput={handleResize}
           id="content"
           placeholder="Tell your story..."
-          className="w-full text-3xl min-h-60 font-serif border-x-2 placeholder:text-gray-400 border-gray-400 outline-none pl-6"
+          className="w-full text-xl sm:text-2xl md:text-3xl min-h-60 font-serif border-x-2 placeholder:text-gray-400 border-gray-400 outline-none pl-4 sm:pl-6 resize-none" // Prevent manual resizing
           rows={6}
         />
-        <div className="flex gap-4 text-sm">
+
+        <div className="flex flex-wrap gap-4 text-sm">
           <select
             onChange={(e) => {
-              setInfo((prev) => {
-                return { ...prev, published: e.target.value };
-              });
+              setInfo((prev) => ({
+                ...prev,
+                published: e.target.value,
+              }));
             }}
             className="appearance-none outline-0 px-4 py-2 border rounded-full text-center text-gray-500"
             defaultValue={info.published}
@@ -94,7 +115,7 @@ function BlogCard(cardInfo: BlogCardProps) {
           </select>
           <input
             type="submit"
-            className="bg-green-600 w-fit px-6 py-1 text-white rounded-full"
+            className="bg-green-600 w-fit px-6 py-2 text-white rounded-full cursor-pointer"
           />
         </div>
       </form>

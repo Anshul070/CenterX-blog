@@ -1,3 +1,4 @@
+import { useState } from "react";
 
 type AuthProps = {
   info: {
@@ -14,6 +15,7 @@ type AuthProps = {
 };
 
 function AuthCard(props: AuthProps) {
+  const [userInfo, setUserInfo] = useState({});
   const {
     fields,
     placeholder,
@@ -41,7 +43,7 @@ function AuthCard(props: AuthProps) {
       </p>
       <form
         className="flex flex-col w-full sm:w-2/3 md:w-1/2"
-        onSubmit={submitOperation}
+        onSubmit={(e) => {e.preventDefault(); submitOperation(userInfo)}}
       >
         {fields.map((field, index) => (
           <label
@@ -49,8 +51,14 @@ function AuthCard(props: AuthProps) {
             className="flex flex-col text-zinc-700 font-semibold mb-2"
             htmlFor={field}
           >
-            {field}
+            {field.charAt(0).toUpperCase() + field.slice(1)}
             <input
+              onChange={(e) => {
+                setUserInfo({
+                  ...userInfo,
+                  [field]: e.target.value,
+                });
+              }}
               id={field}
               type={field}
               placeholder={placeholder[index]}

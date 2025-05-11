@@ -13,6 +13,7 @@ interface BlogDisplayCardProps {
   menu?: {
     title: string;
     action: () => void;
+    style: string;
   }[];
 }
 
@@ -21,42 +22,39 @@ function BlogDisplayCard(info: BlogDisplayCardProps) {
   return (
     <div
       className="w-full flex flex-col gap-4 pt-6 cursor-pointer"
-      onClick={(e) => {e.stopPropagation
+      onClick={(e) => {
+        e.stopPropagation();
         navigate(`/blogs/${info.id}`);
       }}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center  gap-6 text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-3 sm:gap-6 text-sm flex-wrap">
           <Avatar name={info.authorName} />
-          {info.authorName} {Circle()}{" "}
+          <span>{info.authorName}</span>
+          {Circle()}
           <span className="opacity-50">{getFormattedDate(info.createdAt)}</span>
         </div>
-        <div className="flex items-center gap-2 mt-2 z-100">
-          {info.published !== undefined ? (
-            info.published ? (
-              <div className="flex items-center gap-1">
-                <span className="text-xs bg-blue-500 p-1 rounded-lg opacity-50 text-white">
-                  Published
-                </span>
-                <span className="text-lg group relative text-gray-600">
-                  <HiOutlineDotsVertical /> <Menubar menu={info.menu || []} />
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1">
-                <span className="text-xs bg-gray-500 p-1 px-4 rounded-lg opacity-50 text-white">
-                  Draft
-                </span>
-                <span className="text-lg group relative text-gray-600">
-                  <HiOutlineDotsVertical /> <Menubar menu={info.menu || []} />
-                </span>
-              </div>
-            )
-          ) : null}
-        </div>
+        {info.published !== undefined && (
+          <div className="flex items-center gap-2 z-10">
+            <span
+              className={`text-xs sm:text-sm px-3 py-1 rounded-lg text-white ${
+                info.published ? "bg-blue-500" : "bg-gray-500"
+              } opacity-50`}
+            >
+              {info.published ? "Published" : "Draft"}
+            </span>
+            <span className="text-lg group relative text-gray-600">
+              <HiOutlineDotsVertical />
+              <Menubar menu={info.menu || []} />
+            </span>
+          </div>
+        )}
       </div>
-      <h1 className="text-3xl font-bold text-black">{info.title}</h1>
-      <p className="text-sm text-justify text-gray-500">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-black break-words">
+        {info.title}
+      </h1>
+      <p className="text-sm sm:text-base text-justify text-gray-500">
         {info.content.slice(0, 250)}...
       </p>
       <hr className="opacity-60 border-gray-400" />
@@ -71,7 +69,7 @@ export function Circle() {
 export function Avatar({ name, size = 4 }: { name: string; size?: number }) {
   return (
     <h3
-      className={`bg-indigo-600 rounded-full text-white flex items-center justify-center`}
+      className="bg-indigo-600 rounded-full text-white flex items-center justify-center text-sm font-semibold"
       style={{
         width: `${size * 5}px`,
         height: `${size * 5}px`,

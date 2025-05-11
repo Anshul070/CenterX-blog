@@ -13,7 +13,6 @@ export const useAuth = () => {
         }).then(res => {
             if(res.status === 200){
                 setIsAuthenticated(true);
-                console.log("authenticated")
             }
         }).catch((e)=>{
             
