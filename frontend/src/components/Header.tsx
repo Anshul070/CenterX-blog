@@ -36,7 +36,7 @@ function Header() {
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <h1
-            className="text-xl font-bold cursor-pointer"
+            className="text-xl font-bold cursor-pointer pointer-events-none"
             onClick={() => navigate("/blogs/")}
           >
             CenterX
