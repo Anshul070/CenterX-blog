@@ -43,7 +43,7 @@ function Blogs() {
     <div className="bg-white">
       <div className="px-4 sm:px-6 md:px-20 lg:px-40 xl:px-60 py-6 flex flex-col gap-8">
         <div className="fixed z-100 w-full px-14 left-0 flex justify-center pointer-events-none">
-        {(
+        {message && (
           <div
             className="w-fit h-fit mt border-blue-400 border p-4  rounded-lg bg-blue-50 text-blue-400"
             role="alert"
